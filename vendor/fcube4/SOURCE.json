@@ -1,0 +1,23 @@
+{
+  "repository": "https://github.com/ptarau/TypesAndProofs",
+  "commit": "f107973a654d2449eb1447ac0047d3ac87d5554d",
+  "directory": "third_party/fCube-4.1",
+  "downloaded": "2026-10-05",
+  "files": [
+    {
+      "path": "README",
+      "sha": "99c67b0d251e3ee1065a1780bb8eaf978f2c0b76",
+      "sha256": "1d4feee6e8a7eb5da7d4c1e212ad48c3c2be6faeb25f7b59b05202a64cc4e204"
+    },
+    {
+      "path": "fCube/fCube",
+      "sha": "ede05cc712468c945958a445d57a97e04c668ea1",
+      "sha256": "138153d0d66a6293e27edd6a4491ef593c30c542dae054d6780a15dc3035a433"
+    },
+    {
+      "path": "fCube/fCube-verbose",
+      "sha": "a343d78c8b3416ccb090d55f60155d3b74bee2bd",
+      "sha256": "d7bab7a438f3216274500213ba6f789b7c1b101a5f5ca046c0cb95d8e4b5df82"
+    }
+  ]
+}

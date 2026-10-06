@@ -36,11 +36,23 @@ The browser loads `fCube-11.1 Original version/fCube-11.1/fCube/fCube.pl` unchan
 
 Checks run in a worker with cancellation and a 30-second limit. A timeout or runtime error is reported as an incomplete check, never as an invalid formula. Editing the input clears a previous verdict and cancels any running check.
 
+## Countermodels
+
+After fCube 11.1 establishes invalidity, the same worker loads the original fCube 4.1 verbose source from `vendor/fcube4/`, isolated in a separate Prolog module. The module calls its search predicates directly, suppressing verbose output. Both original Prolog sources remain unchanged. The recovered 4.1 README and pinned mirror provenance are included in that directory and in the source archive.
+
+The app reconstructs persistent atomic valuations from the nested tree, checks its signed annotations, and independently evaluates the original formula using intuitionistic Kripke semantics. Auxiliary atoms are then removed from the display. Identical sibling subtrees and redundant unary worlds are simplified; the resulting model is verified again before display. Worlds are never merged solely because they have the same atomic valuation.
+
+Diagrams are static SVGs, with straight cover edges, the root at the bottom, and full proposition labels at every world (including inherited letters). No world names are displayed. With one, two, or three distinct input proposition letters, colored points and surrounding upset regions use Correct Partition's blue/red/yellow convention; overlaps correspond to purple/green/orange/brown. Labels remain visible. With more than three input letters, the entire diagram is monochrome. `∅` means no input proposition letters hold at that world. The input formula is not forced at the bottom root.
+
+Generation has a 5,000,000-inference limit, a separate 10-second browser timeout, and a 200-world reconstruction limit. If it fails, times out, is cancelled, or produces a model that cannot be verified, the established invalidity verdict remains visible with an explanatory message. Formula edits clear both the verdict and the model. All generation and verification happens locally.
+
 The server binds only to the local machine. All runtime assets are local; the app requires no network access after setup. fCube remains GPL-3.0-or-later; original attribution is preserved. See NOTICE.md and LICENSE.
 
 ## Adaptation and licensing
 
 Adaptation date: 5 October 2026. The browser interface, infix syntax, MathML preview, worker adapter, tests, and static deployment packaging are new GPL-3.0-or-later additions. The original fCube 11.1 Prolog decision procedure is unchanged. Bundled dependencies retain their own licenses. The attribution page links to the complete GPL text, original notices, SWI-Prolog license, and the source ZIP generated with that version of the website. The archive includes build instructions and a SHA-256 manifest.
+
+Countermodel adaptation date: 6 October 2026. The original fCube 4.1 source is also unchanged. Its module adapter, independent verification, and diagram renderer are GPL-3.0-or-later additions. See NOTICE.md for source provenance and the diagram palette reference.
 
 ## Verify
 

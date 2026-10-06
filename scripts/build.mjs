@@ -31,6 +31,8 @@ for (const path of site) await copy(path);
 for (const path of await files('src')) await copy(path);
 for (const filename of ['swipl-web.js', 'swipl-web.wasm', 'swipl-web.data']) await copy(`vendor/package/dist/swipl/${filename}`);
 await copy(`${original}/fCube/fCube.pl`, 'fcube.pl');
+await copy('vendor/fcube4/fcube.pl', 'fcube4.pl');
+await copy('vendor/fcube4/README.txt', 'licenses/fCube-4.1-README.txt');
 await copy(`${original}/README.txt`, 'licenses/fCube-original-README.txt');
 await copy('vendor/package/LICENSE.txt', 'licenses/SWI-Prolog.txt');
 await copy('vendor/package/package.json', 'licenses/swipl-wasm-package.json');
@@ -48,6 +50,7 @@ const source = [
   `${original}/fCube/fCube.pl`, `${original}/README.txt`, 'vendor/swipl-metadata.json',
   ...await files('src'), ...await files('scripts'), ...await files('tests'),
   ...await files('docs'), ...await files('.github'), ...await files('vendor/package'),
+  ...await files('vendor/fcube4'),
 ].sort();
 const entries = await Promise.all(source.map(async path => ({ name: path.replaceAll('\\', '/'), data: await readFile(resolve(root, path)) })));
 const manifest = entries.map(({ name, data }) => `${createHash('sha256').update(data).digest('hex')}  ${name}`).join('\n') + '\n';

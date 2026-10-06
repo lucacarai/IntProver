@@ -34,19 +34,21 @@ function unzip(data) {
 
 test('static output contains prover, runtime, GPL text and source/license links', async () => {
   const dist = new URL('../dist/', import.meta.url);
-  for (const path of ['index.html', 'src/app.js', 'src/prover-worker.js', 'src/engine.pl', 'fcube.pl', 'vendor/package/dist/swipl/swipl-web.js', 'vendor/package/dist/swipl/swipl-web.wasm', 'vendor/package/dist/swipl/swipl-web.data', 'LICENSE', 'license.html', 'licenses/SWI-Prolog.txt', 'licenses/fCube-original-README.txt', 'source.zip', '.nojekyll']) assert.ok((await readFile(new URL(path, dist))).length || path === '.nojekyll', path);
+  for (const path of ['index.html', 'src/app.js', 'src/prover-worker.js', 'src/engine.pl', 'src/countermodel-engine.pl', 'src/countermodel.js', 'src/countermodel-diagram.js', 'fcube.pl', 'fcube4.pl', 'vendor/package/dist/swipl/swipl-web.js', 'vendor/package/dist/swipl/swipl-web.wasm', 'vendor/package/dist/swipl/swipl-web.data', 'LICENSE', 'license.html', 'licenses/SWI-Prolog.txt', 'licenses/fCube-original-README.txt', 'licenses/fCube-4.1-README.txt', 'source.zip', '.nojekyll']) assert.ok((await readFile(new URL(path, dist))).length || path === '.nojekyll', path);
   assert.deepEqual(await readFile(new URL('fcube.pl', dist)), await readFile(new URL('../fCube-11.1 Original version/fCube-11.1/fCube/fCube.pl', import.meta.url)));
+  assert.deepEqual(await readFile(new URL('fcube4.pl', dist)), await readFile(new URL('../vendor/fcube4/fcube.pl', import.meta.url)));
+  assert.equal(createHash('sha256').update(await readFile(new URL('fcube4.pl', dist))).digest('hex'), 'd7bab7a438f3216274500213ba6f789b7c1b101a5f5ca046c0cb95d8e4b5df82');
   const index = await readFile(new URL('index.html', dist), 'utf8');
   assert.match(index, /href="\.\/source.zip"/);
   assert.match(index, /href="\.\/license.html"/);
   assert.doesNotMatch(index, /(?:href|src)="\/(?!\/)/);
   assert.doesNotMatch(await readFile(new URL('src/prover-worker.js', dist), 'utf8'), /importScripts\('\//);
-  assert.deepEqual((await readdir(dist)).sort(), ['.nojekyll', 'LICENSE', 'NOTICE.md', 'SOURCE-MANIFEST.sha256', 'fcube.pl', 'index.html', 'license.html', 'licenses', 'source.zip', 'src', 'vendor'].sort());
+  assert.deepEqual((await readdir(dist)).sort(), ['.nojekyll', 'LICENSE', 'NOTICE.md', 'SOURCE-MANIFEST.sha256', 'fcube.pl', 'fcube4.pl', 'index.html', 'license.html', 'licenses', 'source.zip', 'src', 'vendor'].sort());
 });
 
 test('source archive matches published source and excludes unrelated files', async () => {
   const entries = unzip(await readFile(new URL('../dist/source.zip', import.meta.url)));
-  for (const path of ['index.html', 'src/app.js', 'src/formula.js', 'scripts/build.mjs', 'scripts/zip.mjs', 'tests/prover.test.mjs', 'README.md', 'docs/DEPLOYMENT.md', 'LICENSE', 'vendor/package/LICENSE.txt', '.github/workflows/deploy.yml']) {
+  for (const path of ['index.html', 'src/app.js', 'src/formula.js', 'src/countermodel.js', 'scripts/build.mjs', 'scripts/zip.mjs', 'tests/prover.test.mjs', 'README.md', 'docs/DEPLOYMENT.md', 'LICENSE', 'vendor/package/LICENSE.txt', 'vendor/fcube4/fcube.pl', 'vendor/fcube4/README.txt', 'vendor/fcube4/SOURCE.json', '.github/workflows/deploy.yml']) {
     assert.deepEqual(entries.get(path), await readFile(new URL(`../${path}`, import.meta.url)), path);
   }
   assert.equal([...entries.keys()].some(path => /^dist\/|^\.git\/|preview.*\.jpg|\.env|\.tgz$/.test(path)), false);

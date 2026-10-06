@@ -19,7 +19,7 @@ Use Node.js 24 (the workflow's version). No system Prolog installation is needed
 
 The preview is at http://127.0.0.1:4174/prover/ and serves only generated static files. This checks the same subfolder behavior needed by GitHub Pages. If npm is unavailable, the commands are `node --test tests/*.test.mjs`, `node scripts/build.mjs`, and `node scripts/preview.mjs`.
 
-Verify a valid formula, an invalid formula, the explicit grouping preview, malformed-input handling, the source download, and the attribution/license page. Optionally run `npm run licenses` to inspect licenses registered in the pinned runtime.
+Verify a valid formula, an invalid formula and its countermodel, the explicit grouping preview, malformed-input handling, the source download, and the attribution/license page. Check that `p or neg p` displays labelled colored worlds and `p and q and r imp s` displays a monochrome diagram. Editing a formula must clear its old diagram. Optionally run `npm run licenses` to inspect licenses registered in the pinned runtime.
 
 ## GitHub Pages
 

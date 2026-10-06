@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Browser interface added 2026-10-05. See NOTICE.md and LICENSE.
 import { parseFormula, formulaMathML } from './formula.js';
+import { renderCountermodel } from './countermodel-diagram.js';
 
 const input = document.querySelector('#formula-input');
 const preview = document.querySelector('#preview');
@@ -9,12 +10,23 @@ const run = document.querySelector('#run');
 const cancel = document.querySelector('#cancel');
 const result = document.querySelector('#result');
 const status = document.querySelector('#engine-status');
+const countermodel = document.querySelector('#countermodel');
 let ast = null;
 let worker;
 let engineReady = false;
 let checking = false;
+let findingModel = false;
 let requestId = 0;
 let timeout;
+
+function modelNotice(message) {
+  countermodel.replaceChildren();
+  const text = document.createElement('p');
+  text.className = 'countermodel-caption';
+  text.textContent = message;
+  countermodel.append(text);
+  countermodel.hidden = false;
+}
 
 function showResult(state, message) {
   result.hidden = false;
@@ -46,9 +58,30 @@ function startWorker() {
     } else if (data.id === requestId || (data.type === 'error' && data.id === undefined)) {
       clearTimeout(timeout);
       checking = false;
-      if (data.type === 'result') showResult(data.valid ? 'valid' : 'invalid', data.valid ? 'Intuitionistically valid' : 'Not intuitionistically valid');
+      if (data.type === 'result') {
+        showResult(data.valid ? 'valid' : 'invalid', data.valid ? 'Intuitionistically valid' : 'Not intuitionistically valid');
+        if (!data.valid) {
+          checking = true;
+          findingModel = true;
+          status.textContent = 'Finding a countermodel…';
+          modelNotice('Finding a countermodel…');
+          const id = requestId;
+          timeout = setTimeout(() => {
+            if (id !== requestId || !findingModel) return;
+            stopCheck();
+            modelNotice('The formula is not valid, but countermodel generation took too long.');
+          }, 10_000);
+        }
+      } else if (data.type === 'countermodel') {
+        findingModel = false;
+        status.textContent = '';
+        if (data.model) renderCountermodel(countermodel, data.model);
+        else modelNotice(data.message);
+      }
       else {
-        showResult('error', data.message || 'The check could not be completed. Please reload and try again.');
+        if (findingModel) modelNotice('The formula is not valid, but countermodel generation could not be completed.');
+        else showResult('error', data.message || 'The check could not be completed. Please reload and try again.');
+        findingModel = false;
         status.textContent = 'Please reload to try again';
         engineReady = false;
       }
@@ -60,7 +93,9 @@ function startWorker() {
     clearTimeout(timeout);
     checking = false;
     engineReady = false;
-    showResult('error', 'The prover could not start. Please reload and try again.');
+    if (findingModel) modelNotice('The formula is not valid, but countermodel generation could not be completed.');
+    else showResult('error', 'The prover could not start. Please reload and try again.');
+    findingModel = false;
     status.textContent = 'Please reload to try again';
     updateControls();
   };
@@ -69,12 +104,15 @@ function startWorker() {
 function stopCheck() {
   clearTimeout(timeout);
   checking = false;
+  findingModel = false;
   requestId++;
   startWorker();
 }
 function updateFormula() {
   if (checking) stopCheck();
   result.hidden = true;
+  countermodel.hidden = true;
+  countermodel.replaceChildren();
   ast = null;
   input.removeAttribute('aria-invalid');
   error.hidden = true;
@@ -98,6 +136,8 @@ document.querySelector('#formula-form').addEventListener('submit', event => {
   event.preventDefault();
   if (!ast || !engineReady || checking) return;
   checking = true;
+  findingModel = false;
+  countermodel.hidden = true;
   const id = ++requestId;
   showResult('checking', 'Checking your formula…');
   updateControls();
@@ -109,7 +149,9 @@ document.querySelector('#formula-form').addEventListener('submit', event => {
   }, 30_000);
 });
 cancel.addEventListener('click', () => {
+  const wasFindingModel = findingModel;
   stopCheck();
-  result.hidden = true;
+  if (wasFindingModel) modelNotice('Countermodel generation cancelled.');
+  else { result.hidden = true; countermodel.hidden = true; }
 });
 startWorker();
