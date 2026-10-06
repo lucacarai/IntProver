@@ -1,0 +1,5 @@
+/dist/
+/node_modules/
+/preview*.jpg
+/vendor/*.tgz
+/.deployment/

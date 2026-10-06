@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Theorem prover for intuitionistic propositional logic</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ctext x='8' y='30' font-size='32' fill='%23625791'%3E%E2%8A%A2%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./src/style.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main>
+      <div class="intro">
+        <h1>Theorem prover for intuitionistic propositional logic</h1>
+      </div>
+
+      <div class="workspace">
+        <section class="editor" aria-labelledby="formula-label">
+          <form id="formula-form" novalidate>
+            <div class="label-row"><label id="formula-label" for="formula-input">Your formula</label><span class="input-hint">Infix · prefix neg</span></div>
+            <input id="formula-input" name="formula" type="text" placeholder="e.g. (p and (p imp q)) imp q" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="8000" aria-describedby="syntax-help input-error">
+            <p id="syntax-help" class="hint">Use parentheses to group your formula.</p>
+            <p id="input-error" class="input-error" role="alert" hidden></p>
+
+            <div class="preview-header"><span>Formula preview</span><span class="live-label"><span></span> Live</span></div>
+            <div id="preview" class="preview" aria-live="polite"><p class="preview-placeholder">Your formula will appear here.</p></div>
+
+            <div class="action-row">
+              <button id="run" type="submit" disabled><span>Run</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 10h10m-4-4 4 4-4 4"/></svg></button>
+              <button id="cancel" class="cancel" type="button" hidden>Cancel</button>
+              <span id="engine-status" class="engine-status" role="status">Getting ready…</span>
+            </div>
+            <div id="result" class="result" role="status" aria-live="polite" hidden></div>
+          </form>
+        </section>
+
+        <aside class="legend" aria-labelledby="legend-heading">
+          <h2 id="legend-heading">A quick reference</h2>
+          <p class="legend-description">Type the word. We’ll show the symbol.</p>
+          <dl>
+            <div><dt><code>true</code></dt><dd><span class="symbol">⊤</span><span>Truth</span></dd></div>
+            <div><dt><code>false</code></dt><dd><span class="symbol">⊥</span><span>Falsity</span></dd></div>
+            <div><dt><code>neg</code></dt><dd><span class="symbol">¬</span><span>Negation</span></dd></div>
+            <div><dt><code>and</code></dt><dd><span class="symbol">∧</span><span>Conjunction</span></dd></div>
+            <div><dt><code>or</code></dt><dd><span class="symbol">∨</span><span>Disjunction</span></dd></div>
+            <div><dt><code>imp</code></dt><dd><span class="symbol">→</span><span>Implication</span></dd></div>
+          </dl>
+          <div class="legend-notes"><p><strong>Proposition letters</strong><br><code>p</code>, <code>q</code>, <code>p1</code>, <code>q12</code></p><p>Negation goes first: <code>neg p</code> or <code>neg neg p</code>. Use <code>neg (p and q)</code> to negate a group.</p><p>Repeated <code>and</code> or <code>or</code> is fine. Use parentheses when mixing them or repeating <code>imp</code>.</p></div>
+        </aside>
+      </div>
+
+    </main>
+
+    <footer><p>Adapted from fCube 11.1 by Mauro Ferrari, Camillo Fiorentini, and Guido Fiorino. Licensed under the GNU GPL, version 3 or later. Provided without warranty.</p><div class="footer-links"><a href="./source.zip" download>Source code</a><a href="./license.html">Attribution and license</a></div></footer>
+  </div>
+</body>
+</html>

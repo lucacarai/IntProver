@@ -1,0 +1,129 @@
+{
+  "description": "Unchanged fCube-verbose source run in the existing SWI-Prolog WebAssembly runtime. Independent evaluator interprets nested lists as a rooted tree, inherits forced atoms, and checks original formulas and signed atom annotations. Generated formulas use p,q and neg,and,or,imp with at most six syntax-tree nodes. This is a diagnostic sample, not a correctness proof.",
+  "examples": [
+    {
+      "input": "p imp q",
+      "model": "[swff(t,p),swff(fc,q)]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 1
+      }
+    },
+    {
+      "input": "p or neg p",
+      "model": "[swff(f,p),[swff(t,p)]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 2
+      }
+    },
+    {
+      "input": "neg neg p imp p",
+      "model": "[[swff(f,p),[swff(t,p)]]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 3
+      }
+    },
+    {
+      "input": "((p imp q) imp p) imp p",
+      "model": "[swff(fc,q),[swff(f,p),[swff(t,p)]]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 3
+      }
+    },
+    {
+      "input": "neg p or neg neg p",
+      "model": "[[swff(t,p)],[swff(fc,p)]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 3
+      }
+    },
+    {
+      "input": "neg (p and q) imp (neg p or neg q)",
+      "model": "[[[swff(t,p),swff(fc,q)],[swff(t,q),swff(fc,p)]]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 4
+      }
+    },
+    {
+      "input": "(p imp q or r) imp ((p imp q) or (p imp r))",
+      "model": "[[[swff(fc,q),swff(t,p),swff(t,r)],[swff(fc,r),swff(t,p),swff(t,q)]]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 4
+      }
+    },
+    {
+      "input": "p or neg neg neg p",
+      "model": "[swff(f,p),[swff(t,p)]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 2
+      }
+    },
+    {
+      "input": "false",
+      "model": "[[]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 2
+      }
+    },
+    {
+      "input": "true imp false",
+      "model": "[[]]",
+      "check": {
+        "refutes": true,
+        "persistent": true,
+        "annotations": true,
+        "incomplete": false,
+        "worlds": 2
+      }
+    },
+    {
+      "input": "p imp p",
+      "model": "[valida]",
+      "check": null
+    }
+  ],
+  "tally": {
+    "total": 1116,
+    "valid": 90,
+    "invalid": 1026,
+    "verified": 1026,
+    "failed": 0
+  },
+  "failures": [],
+  "errors": []
+}
