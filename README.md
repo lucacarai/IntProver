@@ -18,13 +18,14 @@ The included GitHub Actions workflow tests, builds, and deploys `dist/` when `ma
 
 - One proposition letter, optionally followed by digits: `p`, `Q`, `p1`, `q12`.
 - Constants: `true` and `false`.
-- Infix operators: `and`, `or`, `imp` (lowercase).
+- Infix operators: `and`, `or`, `imp`, `iff` (lowercase).
 - Prefix negation: `neg p`, `neg neg p`, `neg (p and q)`. It binds more tightly than the binary operators; atomic inputs and repeated negation need no parentheses.
-- Parentheses group formulas. Each parenthesized level allows at most one `imp` and cannot mix `and` with `or`.
-- Repeated `and` or repeated `or` is allowed. `and` and `or` bind more tightly than `imp`.
+- Parentheses group formulas. Each parenthesized level allows at most one `imp` and at most one `iff`, and cannot mix `and` with `or`.
+- Repeated `and` or repeated `or` is allowed. `and` and `or` bind more tightly than `imp`, which binds more tightly than `iff`.
 - The live MathML preview inserts grouping parentheses and renders digits as subscripts. Your typed input stays unchanged.
 - Examples: `p and q imp r` → `(p ∧ q) → r`; `p imp q or r` → `p → (q ∨ r)`.
 - Negation examples: `neg p and q` → `¬p ∧ q`; `neg (p and q)` → `¬(p ∧ q)`; `p or neg p` → `p ∨ ¬p`.
+- Biimplication examples: `p iff q` → `p ↔ q`; `p imp q iff r` → `(p → q) ↔ r`. Repeated `iff` requires parentheses, e.g. `p iff (q iff r)`.
 
 ## Decision procedure
 
@@ -33,6 +34,8 @@ The browser loads `fCube-11.1 Original version/fCube-11.1/fCube/fCube.pl` unchan
 `true` is encoded as a theorem `t → t`, and `false` as its negation, using an internal proposition inaccessible to the input grammar. This preserves intuitionistic semantics while avoiding original fCube helper predicates that are not uniformly defined for numeric constants.
 
 `neg` maps directly to the original prover's `non/1` connective.
+
+`iff` maps to the original prover's `equiv/2` connective, with intuitionistic meaning `(A imp B) and (B imp A)`. Countermodel verification checks that both operands agree at the current world and all its successors.
 
 Checks run in a worker with cancellation and a 30-second limit. A timeout or runtime error is reported as an incomplete check, never as an invalid formula. Editing the input clears a previous verdict and cancels any running check.
 

@@ -37,6 +37,7 @@ function referenceForces(ast, model, i = 0) {
     case 'and': return referenceForces(ast.left, model, i) && referenceForces(ast.right, model, i);
     case 'or': return referenceForces(ast.left, model, i) || referenceForces(ast.right, model, i);
     case 'imp': return future(i).every(j => !referenceForces(ast.left, model, j) || referenceForces(ast.right, model, j));
+    case 'iff': return future(i).every(j => referenceForces(ast.left, model, j) === referenceForces(ast.right, model, j));
   }
 }
 
@@ -109,6 +110,23 @@ test('simplification keeps distinct futures with the same valuation and removes 
   const branching = generate(parseFormula('neg p or neg neg p'));
   assert.equal(branching.worlds.length, 3);
   assert.equal(branching.worlds.filter(world => world.atoms.length === 0).length, 2);
+});
+
+test('biimplication countermodels agree with independent intuitionistic semantics', () => {
+  for (const input of ['p iff q', 'p iff neg neg p', 'neg (p iff q)', 'true iff false', 'p iff (q iff r)', 'p iff q imp r']) {
+    const ast = parseFormula(input);
+    assert.equal(validity(ast), 'invalid', input);
+    const model = generate(ast);
+    assert.ok(model, input);
+    const forces = forcingAtWorlds(ast, model);
+    assert.equal(referenceForces(ast, model), false, input);
+    for (let i = 0; i < model.worlds.length; i++) assert.equal(forces[i], referenceForces(ast, model, i), input);
+  }
+  // Agreement at the root alone is insufficient: a successor can distinguish
+  // the operands even when neither atom is forced at the root.
+  const model = { root: 0, worlds: [{ atoms: [], children: [1] }, { atoms: ['p'], children: [] }] };
+  assert.deepEqual(forcingAtWorlds(parseFormula('p iff q'), model), [false, false]);
+  assert.deepEqual(forcingAtWorlds(parseFormula('p iff p'), model), [true, true]);
 });
 
 test('static diagrams always label worlds, use straight cover edges, and stop coloring above three input letters', () => {

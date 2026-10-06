@@ -64,3 +64,30 @@ test('prefix negation binds tightly and does not need enclosing parentheses', ()
 test('negation needs an operand and preserves ambiguity restrictions', () => {
   for (const input of ['neg', 'neg neg', 'neg ()', 'neg and p', 'p neg q', 'negp', '(neg)', 'neg p and q or r', 'neg p imp q imp r', 'neg (p and q or r)']) assert.throws(() => parseFormula(input), { name: 'FormulaError' }, input);
 });
+
+test('biimplication binds below implication and keeps explicit grouping', () => {
+  const cases = {
+    'p iff q': 'p ↔ q',
+    'p and q iff r': '(p ∧ q) ↔ r',
+    'p iff q or r': 'p ↔ (q ∨ r)',
+    'p imp q iff r': '(p → q) ↔ r',
+    'p iff q imp r': 'p ↔ (q → r)',
+    'p iff (q iff r)': 'p ↔ (q ↔ r)',
+    '(p iff q) iff r': '(p ↔ q) ↔ r',
+    'neg (p iff q)': '¬(p ↔ q)',
+    '(p iff q) imp (q iff p)': '(p ↔ q) → (q ↔ p)',
+  };
+  for (const [input, expected] of Object.entries(cases)) assert.equal(formatFormula(parseFormula(input)), expected, input);
+  assert.equal(toProlog(parseFormula('p iff q')), "equiv('p','q')");
+  assert.equal(toProlog(parseFormula('p iff q imp r')), "equiv('p',im('q','r'))");
+  const markup = formulaMathML(parseFormula('p1 iff (q iff r)'));
+  assert.match(markup, /<mo>↔<\/mo>/);
+  assert.match(markup, /aria-label="p1 ↔ \(q ↔ r\)"/);
+  assert.match(markup, /<mo>\(<\/mo>/);
+});
+
+test('biimplication requires operands and parentheses for repeated connectives', () => {
+  for (const input of ['iff p', 'p iff', 'p iff iff q', 'p iff q iff r', 'p iff (q iff r iff s)', 'p imp q iff r imp s', 'p and q iff r or s', 'p IFF q', 'piffq']) {
+    assert.throws(() => parseFormula(input), { name: 'FormulaError' }, input);
+  }
+});

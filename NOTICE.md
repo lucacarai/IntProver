@@ -8,6 +8,8 @@ Countermodel adaptation date: 6 October 2026. A separate Prolog module isolates 
 
 fCube 4.1 source mirror: https://github.com/ptarau/TypesAndProofs/tree/f107973a654d2449eb1447ac0047d3ac87d5554d/third_party/fCube-4.1
 
+Biimplication added 6 October 2026: infix `iff`, mathematical preview, native fCube equivalence adapter, and independent Kripke verification. Original fCube sources remain unchanged.
+
 The blue/red/yellow colors and purple/green/orange/brown combinations follow the visual convention of Luca Carai's Correct Partition project: https://github.com/lucacarai/Correct-partition/blob/fecfd31d4f1cbbbceac5974ab87903702d6a026c/src/visual/palette.ts . The countermodel renderer and region geometry are independently implemented here.
 
 fCube copyright: Mauro Ferrari, Camillo Fiorentini, Guido Fiorino (2012–2014). fCube and this application are licensed under GNU GPL version 3 or later. See LICENSE and the original README and source header.

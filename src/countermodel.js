@@ -34,6 +34,7 @@ export function forcingAtWorlds(ast, model) {
         case 'or': result[i] = a[i] || b[i]; break;
         case 'neg': result[i] = !a[i] && world.children.every(child => result[child]); break;
         case 'imp': result[i] = (!a[i] || b[i]) && world.children.every(child => result[child]); break;
+        case 'iff': result[i] = a[i] === b[i] && world.children.every(child => result[child]); break;
         default: throw new CountermodelError('Unknown formula connective.');
       }
     }

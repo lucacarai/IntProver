@@ -52,3 +52,18 @@ test('prefix negation uses intuitionistic semantics in the original prover', () 
   };
   for (const [input, expected] of Object.entries(cases)) assert.equal(decide(input), expected, input);
 });
+
+test('biimplication uses both intuitionistic implications in the original prover', () => {
+  const cases = {
+    'p iff p': 'valid', 'p iff q': 'invalid',
+    'true iff true': 'valid', 'false iff false': 'valid', 'true iff false': 'invalid',
+    'p and q iff (q and p)': 'valid',
+    'p iff (p and true)': 'valid',
+    '(p iff q) imp (q iff p)': 'valid',
+    'p iff neg neg p': 'invalid',
+    '(p iff q) iff ((p imp q) and (q imp p))': 'valid',
+    'neg (p iff q)': 'invalid',
+    'p iff (q iff r)': 'invalid',
+  };
+  for (const [input, expected] of Object.entries(cases)) assert.equal(decide(input), expected, input);
+});
